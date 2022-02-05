@@ -1,0 +1,30 @@
+{
+  "name": "wordit",
+  "version": "0.0.1",
+  "description": "Compete against others for guessing the correct word",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmedibrahim404/Wordit.git"
+  },
+  "keywords": [
+    "Game",
+    "Words"
+  ],
+  "author": "Ahmed Ibrahim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahmedibrahim404/Wordit/issues"
+  },
+  "homepage": "https://github.com/ahmedibrahim404/Wordit#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.2"
+  }
+}
