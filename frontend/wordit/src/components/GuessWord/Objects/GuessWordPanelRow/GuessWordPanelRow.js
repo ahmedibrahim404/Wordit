@@ -6,14 +6,14 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
-class GuessWordPanelTile extends React.Component {
+let colors = ['Grey', 'Green', 'Yellow', 'Red'];
 
-  
+class GuessWordPanelTile extends React.Component {
 
   render(){
     return (
       <div style={{
-        backgroundColor:"grey",
+        backgroundColor:colors[this.props.color],
         height:"60px",
         width:"60px",
         textAlign:"center",
@@ -39,15 +39,15 @@ class GuessWordPanelRow extends React.Component{
   
   addTiles(){
     this.tiles = [];
-    this.word = this.props.currentWord || "";
-    for(let i=0;i<this.numberOfTiles;i++) this.tiles.push(<GuessWordPanelTile key={i} currentCharacter={this.word.length <= i ? '' : this.word[i]} />);
+    this.word = this.props.currentWord || "";    
+    for(let i=0;i<this.numberOfTiles;i++) this.tiles.push(<GuessWordPanelTile key={i} color={this.props.result[i]} currentCharacter={this.word.length <= i ? '' : this.word[i]} />);
   }
 
 
 
   render(){
     this.addTiles();
-    this.word = "H"
+    while(this.props.result.length < this.props.numberOfTiles) this.props.result.push(0);
     return (
         <Box style={{marginTop:"2px", marginBottom:"0px"}}>
           <Grid container spacing={2}>
