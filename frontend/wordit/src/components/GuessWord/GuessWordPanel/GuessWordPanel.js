@@ -4,18 +4,24 @@ import styles from './GuessWordPanel.module.css';
 import Grid from '@mui/material/Grid';
 import GuessWordPanelRow from '../Objects/GuessWordPanelRow/GuessWordPanelRow';
 
-const GuessWordPanel = () => (
-  <Grid style={{marginTop:"20px"}}>
-    <GuessWordPanelRow />
-    <GuessWordPanelRow />
-    <GuessWordPanelRow />
-    <GuessWordPanelRow />
-    <GuessWordPanelRow />
-  </Grid>
-);
+class GuessWordPanel extends React.Component {
+  
+  constructor(props){
+    super(props);
+    this.state = {
+      numberOfWords: 5,
+      words:[]
+    }
+    while(this.state.words.length < this.state.numberOfWords) this.state.words.push("");
+  }
 
-GuessWordPanel.propTypes = {};
-
-GuessWordPanel.defaultProps = {};
+  render(){
+    return (
+    <Grid style={{marginTop:"20px"}}>
+      {this.state.words.map((word, index) => <GuessWordPanelRow key={index} currentWord={word} numberOfTiles={5} />)}
+    </Grid>
+    );
+  }
+}
 
 export default GuessWordPanel;
