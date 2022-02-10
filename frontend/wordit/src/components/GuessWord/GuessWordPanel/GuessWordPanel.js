@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid';
 import GuessWordPanelRow from '../Objects/GuessWordPanelRow/GuessWordPanelRow';
 import {replaceStringCharacter, isAlpha, isCharacterInWord} from '../../../utilities';
 
+
 class GuessWordPanel extends React.Component {
   
   constructor(props){
@@ -23,7 +24,8 @@ class GuessWordPanel extends React.Component {
       results:results,
       currentWord: 0,
       currentWordIndex:0,
-      correctWord:"AHMED"
+      correctWord:"AHMED",
+      mainPlayer:props.mainPlayer 
     }
 
     while(this.state.words.length < this.state.numberOfWords) this.state.words.push(" ".repeat(this.state.numberOfTiles));
@@ -31,11 +33,11 @@ class GuessWordPanel extends React.Component {
   }
   
   componentDidMount(){
-    document.addEventListener("keydown", this.pressFunction, false);
+    if(this.state.mainPlayer)document.addEventListener("keydown", this.pressFunction, false);
   }
   
   componentWillUnmount(){
-    document.removeEventListener("keydown", this.pressFunction, false);
+    if(this.state.mainPlayer)document.removeEventListener("keydown", this.pressFunction, false);
   }
   
 
@@ -131,7 +133,7 @@ class GuessWordPanel extends React.Component {
   render(){
     return (
     <Grid style={{marginTop:"20px"}}>
-      {this.state.words.map((word, index) => <GuessWordPanelRow key={index} currentWord={word} numberOfTiles={this.state.numberOfTiles} result={this.state.results[index]} />)}
+      {this.state.words.map((word, index) => <GuessWordPanelRow key={index} mainPlayer={this.state.mainPlayer} currentWord={word} numberOfTiles={this.state.numberOfTiles} result={this.state.results[index]} />)}
     </Grid>
     );
   }

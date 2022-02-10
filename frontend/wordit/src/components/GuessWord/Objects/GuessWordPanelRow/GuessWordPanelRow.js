@@ -11,18 +11,18 @@ let colors = ['Grey', 'Green', 'Yellow', 'Red'];
 class GuessWordPanelTile extends React.Component {
 
   render(){
-    return (
+    return (  
       <div style={{
         backgroundColor:colors[this.props.color],
-        height:"60px",
-        width:"60px",
+        height:this.props.mainPlayer ? "60px" : "25px",
+        width:this.props.mainPlayer ? "60px" : "25px",
         textAlign:"center",
         alignContent:"center",
         verticalAlign:"center",
-        margin:"2px",
+        margin:this.props.mainPlayer ? "2px" : "1px",
         borderRadius:"5px"
       }}>
-        {this.props.currentCharacter}
+        {this.props.mainPlayer ? this.props.currentCharacter : ''}
       </div>  
     );
   }
@@ -40,7 +40,7 @@ class GuessWordPanelRow extends React.Component{
   addTiles(){
     this.tiles = [];
     this.word = this.props.currentWord || "";    
-    for(let i=0;i<this.numberOfTiles;i++) this.tiles.push(<GuessWordPanelTile key={i} color={this.props.result[i]} currentCharacter={this.word.length <= i ? '' : this.word[i]} />);
+    for(let i=0;i<this.numberOfTiles;i++) this.tiles.push(<GuessWordPanelTile key={i} mainPlayer={this.props.mainPlayer} color={this.props.result[i]} currentCharacter={this.word.length > i ? this.word[i] : ''} />);
   }
 
 
