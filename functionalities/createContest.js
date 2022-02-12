@@ -1,0 +1,15 @@
+const Contest = require('../models/contest.model');
+
+function createContest(participants){
+
+    let contest  = new Contest;
+    let contestants = [...participants];
+
+    contestants.forEach(player => {
+        contest.addContestant(player);
+    }); 
+
+    return contest;
+}
+
+module.exports = createContest;
