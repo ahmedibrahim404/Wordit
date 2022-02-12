@@ -25,6 +25,7 @@ class Contest {
 
     addContestant(player){
         this.contestants.add(player);
+        player.joinContest(this);
     }
 
     start(){

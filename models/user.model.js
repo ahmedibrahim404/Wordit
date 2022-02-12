@@ -11,10 +11,14 @@ class User {
         return this.contestInside !== null;
     }
 
-    joinContest(contestID){
+    joinContest(contest){
         if(this.isInContest()) return false;
-        this.contestInside = contestID;
+        this.contestInside = contest;
         return true;
+    }
+
+    leaveContest(){
+        this.contestInside = null;
     }
 
 }

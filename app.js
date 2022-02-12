@@ -36,7 +36,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        currentUsersQueue.delete(user);
+        if(user.isInContest()) user.leaveContest();
+        else currentUsersQueue.delete(user);
         console.log(socket.id +  " Disconnected :(");
     });
 
