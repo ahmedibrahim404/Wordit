@@ -1,10 +1,14 @@
 class User {
     
-    userID;
+    contestantID;
     contestInside = null;
     
-    constructor(userID){
-        this.userID = userID;
+    constructor(contestantID){
+        this.contestantID = contestantID;
+    }
+
+    getContestantID(){
+        return this.contestantID;
     }
 
     isInContest(){
