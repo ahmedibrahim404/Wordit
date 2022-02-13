@@ -22,7 +22,7 @@ class Contest {
     }
 
     getContestants(){
-        return this.players;
+        return this.contestants;
     }
 
     addContestant(player){
