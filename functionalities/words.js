@@ -27,6 +27,26 @@ class WordsReader {
         }
         return [...wordsChosen];
     }
+
+    compareWords(correctWord, guessWord){
+        
+        let ans = [];
+
+        for(let charIdx in correctWord){
+            if(charIdx < guessWord.length && correctWord[charIdx] == guessWord[charIdx]) ans.push(0); // green correct guess
+            else if(charIdx < guessWord.length && correctWord.search(guessWord[charIdx]) != -1) ans.push(1); // yellow correct char in wrong place
+            else ans.push(2); // red wrong guess
+        }
+
+        return ans;
+    }
+
+    isCorrectGuess(guessAnswer){
+        for(let val of guessAnswer){
+            if(val != 0) return false;
+        }
+        return true;
+    }
     
 }
 
