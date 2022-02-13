@@ -66,6 +66,13 @@ io.on('connection', (socket) => {
         io.to(userID).emit('enter-word-response', guessAnswer);
     });
 
+    socket.on('get-scoreboard', () => {
+        if(!user.isInContest()) return;
+        let contest = user.getContest();
+        io.to(userID).emit('send-scoreboard', {scoreboard:contest.getScoreboard()});
+    });
+
+
     socket.on('disconnect', () => {
         if(user.isInContest()) user.leaveContest();
         else currentUsersQueue.delete(user);
