@@ -19,6 +19,8 @@ const User = require('./models/user.model');
 const Contest = require('./models/contest.model');
 const createContest = require('./functionalities/createContest');
 
+const WordsReader = require('./functionalities/words');
+let words = new WordsReader();
 
 io.on('connection', (socket) => {
     console.log(socket.id + " User connected!");
@@ -28,11 +30,12 @@ io.on('connection', (socket) => {
     socket.on('enter', () => {
         currentUsersQueue.add(user);
         if(currentUsersQueue.size == REQ_NUM){
-            let contest = createContest(new Set(currentUsersQueue));
+            let contest = createContest(new Set(currentUsersQueue), words);
             currentUsersQueue.clear();
             io.emit('start-contest');
             contest.start();
         }
+
     });
 
     socket.on('disconnect', () => {
