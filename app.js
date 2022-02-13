@@ -14,48 +14,55 @@ var server = app.listen(PORT, () => {
 
 const io = new Server(server);
 
-let currentUsersQueue = new Set();
 
 const User = require('./models/user.model');
 const Contest = require('./models/contest.model');
-const createContest = require('./functionalities/createContest');
+const PrivateContest = require('./models/privateContest.model.js');
+const { createContest } = require('./functionalities/createContest');
 
 const WordsReader = require('./functionalities/words');
 let words = new WordsReader();
+
+let currentUsersQueue = new Set();
 
 io.on('connection', (socket) => {
     console.log(socket.id + " User connected!");
     let userID = socket.id;
     let user = new User(userID);
 
-    socket.on('enter-queue', () => {
+    socket.on('enter-queue', ({username}) => {
         if(user.isInContest()) return;
+
+        user.setUsername(username);
         currentUsersQueue.add(user);
+        
         if(currentUsersQueue.size == REQ_NUM){
             let contest = createContest(new Set(currentUsersQueue), words);
-            
-            let contestants = [...currentUsersQueue];
             currentUsersQueue.clear();
-
-            for(let contestant of contestants){
-                io.to(contestant.getContestantID()).emit('start-contest', {
-                    
-                });
-            }
-
-            contest.start();
-
-            setTimeout(() => {
-                contest.endContest();
-                for(let contestant of contestants){
-                    contestant.leaveContest();
-                    io.to(contestant.getContestantID()).emit('end-contest', {
-
-                    });
-                }
-            }, CONTEST_TIME);    
-
+            contest.start(io);
+            setTimeout(() => contest.endContest(io), CONTEST_TIME);
         }
+    });
+
+    socket.on('enter-private-queue', ({username, contestCode}) => {
+        if(user.isInContest()) return;
+
+        user.setUsername(username);
+        let contest = PrivateContest.getContestFromCode(contestCode); // static method
+        if(contest == null) return;
+
+        contest.addPlayerToQueue(user);
+
+        if(contest.getQueue().size == contest.getNumberOfPlayers()){
+            contest.start(io);
+            setTimeout(() => contest.endContest(io), contest.getDuration());
+        }
+    });
+
+
+    socket.on('create-private-contest', ({contestDuration, slotsAvailable, wordsPerContest, trialsPerWord}) => {
+        let contest = new PrivateContest(words, wordsPerContest, trialsPerWord, slotsAvailable, contestDuration); 
+        io.to(userID).emit('private-contest-code', {contestCode: contest.getContestID()});
     });
 
 
