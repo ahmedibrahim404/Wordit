@@ -11,6 +11,8 @@ class Contest {
 
     wordsToGuess;
 
+    isRunning;
+
     constructor(words){
         this.contestID = generateContestID();
         this.wordsToGuess = words;
@@ -37,8 +39,17 @@ class Contest {
     start(){
         console.log("Contest Started!!!");
         console.log("GO AND GUESS " + this.getWordsToGuess());
+        isRunning = true;
     }
 
+    endContest(){
+        isRunning = false;
+    }
+
+
+    isRunning(){
+        return this.isRunning;
+    }
 
 }
 
