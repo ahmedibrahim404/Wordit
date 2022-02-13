@@ -1,5 +1,5 @@
 function generateContestID(){
-    return Math.random() * 100;
+    return 'Contest_' + Math.floor(Math.random() * 100);
 }
 
 module.exports = generateContestID;

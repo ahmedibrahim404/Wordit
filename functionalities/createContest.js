@@ -2,16 +2,15 @@ const Contest = require('../models/contest.model');
 
 function createContest(participants, wordsList){
 
-    let words = wordsList.pickWords();
-
-    let contest  = new Contest(words);
+    let contest  = new Contest(wordsList);
     let contestants = [...participants];
 
     contestants.forEach(player => {
         contest.addContestant(player);
+        player.joinContest(contest);
     }); 
     
     return contest;
 }
 
-module.exports = createContest;
+module.exports = { createContest };

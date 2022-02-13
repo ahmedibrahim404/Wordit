@@ -4,18 +4,12 @@ class Contest {
 
     contestID;
     contestants = new Set();
-
-    startTime;
-    duration;
-    numberOfPlayers;
-
     wordsToGuess;
-
     isRunning;
 
-    constructor(words){
+    constructor(wordsList, wordsCount){
         this.contestID = generateContestID();
-        this.wordsToGuess = words;
+        this.wordsToGuess = wordsList.pickWords(wordsCount);
         return this;
     }
 
@@ -29,21 +23,32 @@ class Contest {
 
     addContestant(player){
         this.contestants.add(player);
-        player.joinContest(this);
     }
 
     getWordsToGuess(){
         return this.wordsToGuess;
     }
 
-    start(){
+    start(io){
         console.log("Contest Started!!!");
         console.log("GO AND GUESS " + this.getWordsToGuess());
         this.isRunning = true;
+
+        let contestants = [...this.getContestants()];
+        for(let contestant of contestants){
+            io.to(contestant.getContestantID()).emit('start-contest');
+        }
     }
 
-    endContest(){
+    endContest(io){
         this.isRunning = false;
+
+        let contestants = [...this.getContestants()];
+        for(let contestant of contestants){
+            contestant.leaveContest();
+            io.to(contestant.getContestantID()).emit('end-contest');
+        }
+
     }
 
     isContestRunning(){
