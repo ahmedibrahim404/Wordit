@@ -68,9 +68,13 @@ io.on('connection', (socket) => {
 
     socket.on('enter-word', ({wordEntered, wordIndex}) => {
         if(!user.isInContest() || !user.canTryWord(wordIndex)) return;
+        
         let guessAnswer = user.guessWord(wordIndex, wordEntered, words);
+
         if(guessAnswer.error) return;
-        io.to(userID).emit('enter-word-response', guessAnswer);
+
+        let response = {user:userID,guessAnswer}
+        user.getContest().proadcastAllContestants(io, 'player-state-update', response);
     });
 
     socket.on('get-scoreboard', () => {
