@@ -67,6 +67,13 @@ class Contest {
 
     }
 
+    proadcastAllContestants(io, event, params){
+        let contestants = [...this.getContestants()];
+        for(let contestant of contestants){
+            io.to(contestant.getContestantID()).emit(event, params);
+        }
+    }
+
 }
 
 module.exports = Contest;
