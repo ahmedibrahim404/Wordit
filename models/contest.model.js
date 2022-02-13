@@ -39,16 +39,27 @@ class Contest {
     start(){
         console.log("Contest Started!!!");
         console.log("GO AND GUESS " + this.getWordsToGuess());
-        isRunning = true;
+        this.isRunning = true;
     }
 
     endContest(){
-        isRunning = false;
+        this.isRunning = false;
     }
 
-
-    isRunning(){
+    isContestRunning(){
         return this.isRunning;
+    }
+
+    getScoreboard(){
+        
+        let contestants = [...this.getContestants()];
+        let scoreboard = [];
+        for(let contestant of contestants){
+            scoreboard.push([contestant.getUsername(), contestant.getScore()]);
+        }
+
+        return scoreboard;
+
     }
 
 }
