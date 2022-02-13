@@ -1,14 +1,18 @@
-const { MAX_NUMBER_OF_TRIALS } = require("../config");
+const { MAX_NUMBER_OF_TRIALS, PENALITY_PER_WRONG } = require("../config");
 
 class User {
     
     contestantID;
+    username;
     contestInside = null;
     
     numberOfTrials = []; // denotes number of trial in each word in contest
     wordsStates = []; // denotes states of words in contest (0 pending, 1 winner, 2 loser)
 
-    constructor(contestantID){
+    score;
+
+    constructor(contestantID, username=null){
+        this.setUsername(username);
         this.contestantID = contestantID;
     }
 
@@ -35,6 +39,7 @@ class User {
         cnt = cnt || 5;
         this.numberOfTrials = Array(cnt).fill(0);
         this.wordsStates = Array(cnt).fill(0);
+        this.score = 0;
     }
 
     canTryWord(wordIndex){
@@ -45,17 +50,36 @@ class User {
         return this.numberOfTrials[wordIndex];
     }
 
+    setUsername(username=null){
+        if(username == null) username = "User_" + Math.floor(Math.random()*1000);
+        this.username = username;
+    }
+
+    getUsername(){
+        return this.username;
+    }
+
+    addScore(numberOfTrials){
+        this.score += Math.max(0, 100 - numberOfTrials * PENALITY_PER_WRONG);
+    }
+
+    getScore(){
+        return this.score;
+    }
+
     guessWord(wordIndex, wordEntered, wordsControllerInstance){
         let currentContest = this.getContest(), numberOfTrials = this.getNumberOfTrial(wordIndex);
         
-        if(numberOfTrials >= MAX_NUMBER_OF_TRIALS || this.wordsStates[wordIndex] !== 0 || !currentContest.isRunning()) return {error:true};
+        if(numberOfTrials >= MAX_NUMBER_OF_TRIALS || this.wordsStates[wordIndex] !== 0 || !currentContest.isContestRunning()) return {error:true};
         this.numberOfTrials[wordIndex]++;
         
         let correctWord = currentContest.getWordsToGuess()[wordIndex];
         let guessAnswer = wordsControllerInstance.compareWords(correctWord, wordEntered);
         
-        if(wordsControllerInstance.isCorrectGuess(guessAnswer)) this.wordsStates[wordIndex] = 1; // meaning win
-        else if(numberOfTrials == MAX_NUMBER_OF_TRIALS) this.wordsStates[wordIndex] = 2;
+        if(wordsControllerInstance.isCorrectGuess(guessAnswer)){ // meaning win
+            this.wordsStates[wordIndex] = 1;
+            this.addScore(numberOfTrials);
+        } else if(numberOfTrials == MAX_NUMBER_OF_TRIALS) this.wordsStates[wordIndex] = 2; // lose
         
         return { wordIndex, guessAnswer, numberOfTrials };
     }
