@@ -48,7 +48,7 @@ class User {
     guessWord(wordIndex, wordEntered, wordsControllerInstance){
         let currentContest = this.getContest(), numberOfTrials = this.getNumberOfTrial(wordIndex);
         
-        if(numberOfTrials >= MAX_NUMBER_OF_TRIALS || this.wordsStates[wordIndex] !== 0) return {error:true};
+        if(numberOfTrials >= MAX_NUMBER_OF_TRIALS || this.wordsStates[wordIndex] !== 0 || !currentContest.isRunning()) return {error:true};
         this.numberOfTrials[wordIndex]++;
         
         let correctWord = currentContest.getWordsToGuess()[wordIndex];
