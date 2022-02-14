@@ -5,5 +5,6 @@ module.exports = {
             info:"Trying to Guess it",
             link:"/guessword"
         }
-    ]
+    ],
+    SOCKET_URL:"localhost:6060/"
 }
