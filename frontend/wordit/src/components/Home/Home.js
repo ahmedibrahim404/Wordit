@@ -11,6 +11,8 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 
 import { games } from '../../config';
+import { Link } from 'react-router-dom';
+
 
 const GameButtons = () => (
   
@@ -49,7 +51,9 @@ const GameButtons = () => (
               <Typography variant="body2" color="text.secondary" component="p">
                 {game.info}
               </Typography>
-              <Button variant="contained">Play {game.gameName}</Button>
+              <Link to={"/guessword"}> <Button variant="contained" >
+                Play {game.gameName}
+              </Button></Link>
           </CardContent>
         
         </Card>
