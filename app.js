@@ -32,6 +32,7 @@ io.on('connection', (socket) => {
 
     socket.on('enter-queue', ({username}) => {
         if(user.isInContest()) return;
+        io.to(userID).emit('enter-queue-wait');
 
         user.setUsername(username);
         currentUsersQueue.add(user);
@@ -45,7 +46,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('enter-private-queue', ({username, contestCode}) => {
-        if(user.isInContest()) return;
+        if(user.isInContest()) return;        
+        io.to(userID).emit('enter-queue-wait');
 
         user.setUsername(username);
         let contest = PrivateContest.getContestFromCode(contestCode); // static method
