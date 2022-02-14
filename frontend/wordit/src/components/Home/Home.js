@@ -67,7 +67,6 @@ const GameButtons = () => (
 
 const Home = () => (
   <div className={styles.Home} data-testid="Home">
-    <Navbar />
     <GameButtons />
   </div>
 );

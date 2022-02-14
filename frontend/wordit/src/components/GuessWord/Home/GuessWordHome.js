@@ -17,7 +17,6 @@ const options = [
 
 const GuessWordHome = () => (
   <div className={styles.GuessWordHome} data-testid="GuessWordHome">
-      <Navbar />
       <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
         {
           options.map((option) => {

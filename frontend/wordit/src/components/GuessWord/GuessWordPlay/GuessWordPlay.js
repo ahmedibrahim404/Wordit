@@ -20,8 +20,6 @@ const Grid = styled(MuiGrid)(({ theme }) => ({
 const GuessWordPlay = () => (
   <div className={styles.GuessWordPlay} data-testid="GuessWordPlay">
 
-  <Navbar />
-
   <Scoreboard />
 
   <Grid container spacing={2}>
