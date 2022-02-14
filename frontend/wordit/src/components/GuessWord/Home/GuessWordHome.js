@@ -8,13 +8,10 @@ import Grid from '@mui/material/Grid';
 
 const options = [
   {
-    name:'Find Game'
-  },
-  {
     name:'Create Game'
   },
   {
-    name:'Join with friends'
+    name:'Enter Game'
   }
 ]
 
