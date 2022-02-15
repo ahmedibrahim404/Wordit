@@ -13,6 +13,8 @@ class GuessWordPanel extends React.Component {
     super(props);
     
     this.io = socket;
+
+    // initial state
     this.state = {
       numberOfWords: this.props.numberOfWords,
       numberOfTiles: 5,
@@ -34,7 +36,13 @@ class GuessWordPanel extends React.Component {
     this.clearGrid = this.clearGrid.bind(this);
   }
 
+  /**
+   * 
+   * @param currentWordIndex indicates the index of current word in panel
+   * @param resultsGiven if any previous results for this word will be passed
+   */
   clearGrid(currentWordIndex, resultsGiven=null){
+    
     let results = [];
     if(resultsGiven == null){
       let wordResult = [];
@@ -43,9 +51,9 @@ class GuessWordPanel extends React.Component {
     } else {
       results = [...resultsGiven];
     }
+
     let idx = 0;
     let words = [];
-
     while(idx < this.state.numberOfAttempts){
       words.push(" ".repeat(this.state.numberOfTiles));
       idx++;
@@ -60,12 +68,14 @@ class GuessWordPanel extends React.Component {
       currentWordIndex
     });
 
-
   }
   
   componentDidMount(){
+    // clear grid for the first word
     this.clearGrid(this.state.currentWordIndex);
+    // start contest
     this.onContestStart();
+    // add event to check if any player enters word, and insert it
     this.io.on('player-state-update', ({user, guessAnswer}) => {
       if(user == this.state.ownerID && guessAnswer.wordIndex == this.state.currentWordIndex){
         this.changeWordResult(guessAnswer);
@@ -74,16 +84,19 @@ class GuessWordPanel extends React.Component {
   }
 
   componentDidUpdate(prevProp){
+    // checks if the same previous props, don't clear the grid
     if(this.props.currentWordIndex == prevProp.currentWordIndex && this.props.results == prevProp.results) return;
     this.clearGrid(this.props.currentWordIndex, this.props.results);
   }
 
   onContestStart(){
-    if(this.state.mainPlayer)document.addEventListener("keydown", this.pressFunction, false);
+    // if this grid's owner is the current player
+    if(this.state.mainPlayer) document.addEventListener("keydown", this.pressFunction, false);
   }
 
   onContestEnd(){
-    if(this.state.mainPlayer)document.removeEventListener("keydown", this.pressFunction, false);
+    // if this grid's owner is the current player
+    if(this.state.mainPlayer) document.removeEventListener("keydown", this.pressFunction, false);
   }
   
   componentWillUnmount(){
@@ -98,6 +111,7 @@ class GuessWordPanel extends React.Component {
     
     if(wordIndex >= words.length) return;
     if(characterIndex >= words[wordIndex].length) return;
+    // if not alphabet character
     if(!isAlpha(newCharacter)) return;
     
     words[wordIndex] = replaceStringCharacter(words[wordIndex], characterIndex, newCharacter);
@@ -124,7 +138,13 @@ class GuessWordPanel extends React.Component {
     });
   }
 
+  /**
+   * Enter word guess
+   * @param wordIndex indicates the word index the player just entered 
+   * @param characterIndex additional parameter to check if word is complete 
+   */
   enterWord(wordIndex, characterIndex){
+    
     let words = [...this.state.words];
     
     if(wordIndex >= words.length) return;
@@ -134,6 +154,7 @@ class GuessWordPanel extends React.Component {
   }
 
   advanceWord(){
+    // move to next row of word
     this.setState({
       ...this.state,
       currentRowIndex: this.state.currentRowIndex+1,
@@ -141,6 +162,10 @@ class GuessWordPanel extends React.Component {
     });
   }
 
+  /**
+   * method to send server-side to check of current word state
+   * @param wordIndex indicates the word index the player just entered
+   */
   checkWord(wordIndex){
 
     const wordEntered = this.state.words[wordIndex];
@@ -152,7 +177,6 @@ class GuessWordPanel extends React.Component {
   }
 
   changeWordResult(currentResults){
-    //console.log(currentResults);
     if(currentResults.error) return;
     let wordIndex = currentResults.numberOfTrials;
 
