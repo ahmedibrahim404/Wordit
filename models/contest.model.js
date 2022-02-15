@@ -46,7 +46,9 @@ class Contest {
         let contestants = [...this.getContestants()];
         for(let contestant of contestants){
             contestant.leaveContest();
-            io.to(contestant.getContestantID()).emit('end-contest');
+            io.to(contestant.getContestantID()).emit('end-contest', {
+                scoreboard: this.getScoreboard()
+            });
         }
 
     }
