@@ -33,9 +33,9 @@ class WordsReader {
         let ans = [];
 
         for(let charIdx in correctWord){
-            if(charIdx < guessWord.length && correctWord[charIdx] == guessWord[charIdx]) ans.push(0); // green correct guess
-            else if(charIdx < guessWord.length && correctWord.search(guessWord[charIdx]) != -1) ans.push(1); // yellow correct char in wrong place
-            else ans.push(2); // red wrong guess
+            if(charIdx < guessWord.length && correctWord[charIdx] == guessWord[charIdx]) ans.push(1); // green correct guess
+            else if(charIdx < guessWord.length && correctWord.search(guessWord[charIdx]) != -1) ans.push(2); // yellow correct char in wrong place
+            else ans.push(3); // red wrong guess
         }
 
         return ans;
