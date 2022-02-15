@@ -34,7 +34,7 @@ function App() {
         <Navbar />
         <div
           style={{
-            //backgroundImage: "url(" + backgroundH + ")",
+            backgroundImage: "linear-gradient(#D3D3D3, #696969)",
             backgroundSize: "cover",
             height: "100vh",
           }}
