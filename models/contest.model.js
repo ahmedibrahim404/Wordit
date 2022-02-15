@@ -80,6 +80,15 @@ class Contest {
         });
     }
 
+    getPlayersWordResult(wordIndex){
+        let contestants = [...this.getContestants()];
+        let results = {};
+        for(let contestant of contestants){
+            results[contestant.getContestantID()] = contestant.getPlayerGuessesOfWord(wordIndex);
+        }
+        return results;
+    }
+
 }
 
 module.exports = Contest;
