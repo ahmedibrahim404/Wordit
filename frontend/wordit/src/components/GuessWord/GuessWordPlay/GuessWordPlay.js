@@ -10,6 +10,7 @@ import { socket } from '../../../utilities/socket';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { Box } from '@mui/material';
+import Timer from '../Objects/Timer/Timer';
 
 const Grid = styled(MuiGrid)(({ theme }) => ({
   width: '100%',
@@ -34,7 +35,9 @@ class GuessWordPlay extends React.Component {
       users:[],
       wordNumbers:2,
       currentWordIndex:0,
-      currentWordAnswers:{}
+      currentWordAnswers:{},
+
+      contestDuration:5000
     }
 
     this.goNextWord = this.goNextWord.bind(this);
@@ -73,6 +76,7 @@ class GuessWordPlay extends React.Component {
     <Scoreboard />
 
     <Grid container spacing={2}>
+      <Timer time={this.state.contestDuration} />
       <Grid item xs={8}>
       <Box textAlign='center'>
         <ButtonGroup variant="text" aria-label="text button group">
