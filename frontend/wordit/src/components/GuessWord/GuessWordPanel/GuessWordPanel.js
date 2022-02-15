@@ -93,14 +93,15 @@ class GuessWordPanel extends React.Component {
     if(wordIndex >= words.length) return;
     if(characterIndex !== words[wordIndex].length) return;
 
-    this.checkWord(wordIndex);
+    this.checkWord(wordIndex);  
+  }
 
+  advanceWord(){
     this.setState({
       ...this.state,
       currentWord: this.state.currentWord+1,
       currentWordIndex:0
     });
-    
   }
 
   checkWord(wordIndex){
@@ -125,6 +126,8 @@ class GuessWordPanel extends React.Component {
       ...this.state,
       results:results
     });
+
+    this.advanceWord();
   }
 
 
