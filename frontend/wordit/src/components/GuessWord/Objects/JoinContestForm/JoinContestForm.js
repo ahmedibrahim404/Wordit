@@ -26,7 +26,8 @@ class JoinContestForm extends React.Component {
   }
 
   componentDidMount(){
-    this.io.on('enter-queue-wait', () => {
+    this.io.on('enter-queue-wait', ({userID}) => {
+      localStorage.setItem('player-id', userID);
       this.props.myNavigation("/guessword/play/");
     });
   }
