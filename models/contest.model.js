@@ -74,6 +74,12 @@ class Contest {
         }
     }
 
+    sendAllPlayersIDs(io){
+        this.proadcastAllContestants(io, 'players-joined', {
+            users:[...this.getContestants()].map((contestant) => contestant.getContestantID())
+        });
+    }
+
 }
 
 module.exports = Contest;
