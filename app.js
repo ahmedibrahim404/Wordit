@@ -4,7 +4,9 @@ const dotenv = require('dotenv').config({path:__dirname+'/.env'});
 const config = require('./config');
 const PORT = config.PORT || 3000;
 const REQ_NUM = config.REQ_NUM || 3; 
-const CONTEST_TIME = config.CONTEST_TIME || 10000; // 10 seconds
+const CONTEST_TIME = config.CONTEST_TIME || 60000; // 60 seconds
+const cors = require('cors');
+app.use(cors());
 
 const { Server } = require("socket.io");
 
