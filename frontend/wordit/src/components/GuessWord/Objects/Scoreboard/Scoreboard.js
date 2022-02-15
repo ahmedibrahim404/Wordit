@@ -14,6 +14,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import Modal from '@mui/material/Modal';
 import Backdrop from '@mui/material/Backdrop';
 import Fade from '@mui/material/Fade';
+import {socket} from '../../../../utilities/socket';
 
 function TablePaginationActions(props) {
   const { count, page, rowsPerPage, onPageChange } = props;
@@ -29,31 +30,21 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-function createData(name, calories, fat) {
-  return { name, calories, fat };
+
+/**
+ * Sorts an array based on score descending 
+ * Array structure = ([username, score])
+ * @param arr array to be sorted
+ */
+const sortScores = (arr) => {
+  return arr.sort((a, b) => (a[1] > b[1] ? -1 : 1));
 }
 
-const rows = [
-  createData('Cupcake', 305, 3.7),
-  createData('Donut', 452, 25.0),
-  createData('Eclair', 262, 16.0),
-  createData('Frozen yoghurt', 159, 6.0),
-  createData('Gingerbread', 356, 16.0),
-  createData('Honeycomb', 408, 3.2),
-  createData('Ice cream sandwich', 237, 9.0),
-  createData('Jelly Bean', 375, 0.0),
-  createData('KitKat', 518, 26.0),
-  createData('Lollipop', 392, 0.2),
-  createData('Marshmallow', 318, 0),
-  createData('Nougat', 360, 19.0),
-  createData('Oreo', 437, 18.0),
-].sort((a, b) => (a.calories < b.calories ? -1 : 1));
 
-function CustomPaginationActionsTable() {
+function ScoreboardData(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   const handleChangePage = (event, newPage) => {
@@ -65,6 +56,7 @@ function CustomPaginationActionsTable() {
     setPage(0);
   };
 
+  let rows = [...props.scoreboard];
   return (
     <TableContainer component={Paper} style={{position:"fixed", top:"20%", right:"40%", maxWidth:350}}>
       <Table sx={{ maxWidth: 350 }} aria-label="custom pagination table">
@@ -73,15 +65,12 @@ function CustomPaginationActionsTable() {
             ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : rows
           ).map((row) => (
-            <TableRow key={row.name}>
+            <TableRow key={row[0]}>
               <TableCell component="th" scope="row">
-                {row.name}
+                {row[0]}
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
-                {row.calories}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.fat}
+                {row[1]}
               </TableCell>
             </TableRow>
           ))}
@@ -96,8 +85,8 @@ function CustomPaginationActionsTable() {
           <TableRow>
             <TablePagination
               rowsPerPageOptions={[5, 
-                //10, 25,
-                // { label: 'All', value: -1 }
+                10, 25,
+                 { label: 'All', value: -1 }
                 ]}
               colSpan={3}
               count={rows.length}
@@ -121,17 +110,66 @@ function CustomPaginationActionsTable() {
 }
 
 
-export default function AnimatedModal() {
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => {
-        setOpen(true);
-    };
-    const handleClose = () => {
-        setOpen(false);
-    };
+export default class Scoreboard extends React.Component {
+   
+  constructor(props){
+    super(props);
+    this.io = socket;
+    this.state = {
+      open:false,
+      scoreboard:[]
+    }
+    
+  }
+
+  componentDidMount(){
+    this.io.on('send-scoreboard', ({scoreboard}) => {
+      this.setScoreboard(scoreboard);
+    });
+
+    this.io.on('end-contest', ({scoreboard}) => {
+      this.setScoreboard(scoreboard);
+      this.setOpen(true);
+    });
+
+  }
+  
+  /**
+   * set state with the new scoreboard data
+   * @param  {} scoreboard scoreboard data from back-end
+   */
+  setScoreboard(scoreboard){
+    this.setState({
+      ...this.state,
+      scoreboard: sortScores(scoreboard)
+    });
+  }
+
+  /**
+   * method to toggle scoreboard
+   * @param {bool} val indicates state of scoreboard (true=open/false=close)
+   */
+  setOpen(val){
+    this.setState({
+      ...this.state,
+      open:val
+    });
+  }
+  
+  handleOpen = () => {
+    this.setOpen(true);
+  };
+
+
+  handleClose = () => {
+    this.setOpen(false);
+  };
+
+
+  render(){
     return (
         <div>
-            <Box sx={{ '& > :not(style)': { m: 1 } }} onClick={handleOpen} style={{position:"fixed", left:15, bottom:15}}>
+            <Box sx={{ '& > :not(style)': { m: 1 } }} onClick={this.handleOpen} style={{position:"fixed", left:15, bottom:15}}>
               <Fab variant="extended">
               <PeopleIcon sx={{ mr: 1 }}  />
                   Scoreboard
@@ -141,18 +179,19 @@ export default function AnimatedModal() {
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
-                open={open}
-                onClose={handleClose}
+                open={this.state.open}
+                onClose={this.handleClose}
                 closeAfterTransition
                 BackdropComponent={Backdrop}
                 BackdropProps={{
                     timeout: 500,
                 }}
             >
-                <Fade in={open}>
-                  <div><CustomPaginationActionsTable /></div>
+                <Fade in={this.state.open}>
+                  <div><ScoreboardData scoreboard={this.state.scoreboard} /></div>
                 </Fade>
             </Modal>
         </div>
     );
+  }
 }
