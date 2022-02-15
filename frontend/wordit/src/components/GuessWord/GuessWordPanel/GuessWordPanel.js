@@ -4,11 +4,12 @@ import styles from './GuessWordPanel.module.css';
 import Grid from '@mui/material/Grid';
 import GuessWordPanelRow from '../Objects/GuessWordPanelRow/GuessWordPanelRow';
 import {replaceStringCharacter, isAlpha, isCharacterInWord} from '../../../utilities';
+import { socket } from '../../../utilities/socket';
 
 
 class GuessWordPanel extends React.Component {
-  
   constructor(props){
+    
     super(props);
 
     let wordResult = [];
@@ -16,7 +17,7 @@ class GuessWordPanel extends React.Component {
     for(let i=0;i<5;i++) wordResult.push(0);
     for(let i=0;i<5;i++) results.push(wordResult);
 
-
+    this.io = socket;
     this.state = {
       numberOfWords: 5,
       numberOfTiles: 5,
@@ -24,20 +25,34 @@ class GuessWordPanel extends React.Component {
       results:results,
       currentWord: 0,
       currentWordIndex:0,
-      correctWord:"AHMED",
-      mainPlayer:props.mainPlayer 
+      mainPlayer:props.mainPlayer,
+      ownerID:props.ownerID
     }
 
     while(this.state.words.length < this.state.numberOfWords) this.state.words.push(" ".repeat(this.state.numberOfTiles));
     this.pressFunction = this.pressFunction.bind(this);
+    this.changeWordResult = this.changeWordResult.bind(this);
   }
   
   componentDidMount(){
+    this.onContestStart();
+    this.io.on('player-state-update', ({user, guessAnswer}) => {
+      if(user == this.state.ownerID){
+        this.changeWordResult(guessAnswer);
+      }
+    });
+  }
+
+  onContestStart(){
     if(this.state.mainPlayer)document.addEventListener("keydown", this.pressFunction, false);
+  }
+
+  onContestEnd(){
+    if(this.state.mainPlayer)document.removeEventListener("keydown", this.pressFunction, false);
   }
   
   componentWillUnmount(){
-    if(this.state.mainPlayer)document.removeEventListener("keydown", this.pressFunction, false);
+    this.onContestEnd();
   }
   
 
@@ -90,29 +105,26 @@ class GuessWordPanel extends React.Component {
 
   checkWord(wordIndex){
 
-    let currentResults = [0, 0, 0, 0, 0];
-
-    const correctWord = this.state.correctWord;
-    const currentWord = this.state.words[wordIndex];
-
-    for(let characterIndex in currentWord){
-      if(correctWord[characterIndex] == currentWord[characterIndex]){
-        currentResults[characterIndex] = 1;
-      } else if(isCharacterInWord(currentWord[characterIndex], correctWord)){
-        currentResults[characterIndex] = 2;
-      } else {
-        currentResults[characterIndex] = 3;
-      }
-    }
+    const wordEntered = this.state.words[wordIndex];
+    this.io.emit('enter-word', {
+      wordIndex:0,
+      wordEntered
+    });
     
+  }
+
+  changeWordResult(currentResults){
+    //console.log(currentResults);
+    if(currentResults.error) return;
+    let wordIndex = currentResults.numberOfTrials;
+
     let results = this.state.results;
-    results[wordIndex] = currentResults;
+    results[wordIndex] = currentResults.guessAnswer.map((i) => i+1);
 
     this.setState({
       ...this.state,
       results:results
     });
-
   }
 
 
