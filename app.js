@@ -2,13 +2,20 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv').config({path:__dirname+'/.env'});
 const config = require('./config');
+const cors = require('cors');
+const { Server } = require("socket.io");
+
+const User = require('./models/user.model');
+const Contest = require('./models/contest.model');
+const PrivateContest = require('./models/privateContest.model.js');
+const { createContest } = require('./functionalities/createContest');
+const WordsReader = require('./functionalities/words');
+
 const PORT = config.PORT || 3000;
 const REQ_NUM = config.REQ_NUM || 3; 
 const CONTEST_TIME = config.CONTEST_TIME || 60000; // 60 seconds
-const cors = require('cors');
-app.use(cors());
 
-const { Server } = require("socket.io");
+app.use(cors());
 
 var server = app.listen(PORT, () => {
     console.log("Server is running over port " + PORT);
@@ -17,14 +24,7 @@ var server = app.listen(PORT, () => {
 const io = new Server(server);
 
 
-const User = require('./models/user.model');
-const Contest = require('./models/contest.model');
-const PrivateContest = require('./models/privateContest.model.js');
-const { createContest } = require('./functionalities/createContest');
-
-const WordsReader = require('./functionalities/words');
 let words = new WordsReader();
-
 let currentUsersQueue = new Set();
 
 io.on('connection', (socket) => {
@@ -87,6 +87,12 @@ io.on('connection', (socket) => {
         if(!user.isInContest()) return;
         let contest = user.getContest();
         io.to(userID).emit('send-scoreboard', {scoreboard:contest.getScoreboard()});
+    });
+
+    socket.on('get-players-word-result', ({wordIndex}) => {
+        if(!user.isInContest()) return;
+        let contest = user.getContest();
+        io.to(userID).emit('send-players-word-result', {results:contest.getPlayersWordResult(wordIndex)});
     });
 
 
