@@ -171,6 +171,7 @@ class Scoreboard extends React.Component {
   }
   
   handleOpen = () => {
+    this.io.emit('get-scoreboard');
     this.setOpen(true);
   };
 
