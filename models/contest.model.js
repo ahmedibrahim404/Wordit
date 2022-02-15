@@ -1,3 +1,4 @@
+const { CONTEST_TIME, WORDS_PER_CONTEST, MAX_NUMBER_OF_TRIALS } = require('../config');
 const generateContestID = require('../functionalities/generateContestID');
 
 class Contest {
@@ -36,7 +37,11 @@ class Contest {
 
         let contestants = [...this.getContestants()];
         for(let contestant of contestants){
-            io.to(contestant.getContestantID()).emit('start-contest');
+            io.to(contestant.getContestantID()).emit('start-contest', {
+                contestDuration: CONTEST_TIME,
+                numberOfWords: WORDS_PER_CONTEST,
+                numberOfTrials: MAX_NUMBER_OF_TRIALS          
+            });
         }
     }
 

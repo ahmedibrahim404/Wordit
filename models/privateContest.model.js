@@ -39,6 +39,22 @@ class PrivateContest extends Contest {
         return this.numberOfPlayers;
     }
 
+    start(io){
+        console.log("Contest Started!!!");
+        console.log("GO AND GUESS " + this.getWordsToGuess());
+        this.isRunning = true;
+
+        let contestants = [...this.getContestants()];
+        for(let contestant of contestants){
+            io.to(contestant.getContestantID()).emit('start-contest', {
+                contestDuration: this.duration,
+                numberOfWords: this.numberOfWords,
+                numberOfTrials: this.numberOfTrials          
+            });
+        }
+    }
+
+
     endContest(io){
         PrivateContest.contests.delete(this.getContestID());
         super.endContest(io);
