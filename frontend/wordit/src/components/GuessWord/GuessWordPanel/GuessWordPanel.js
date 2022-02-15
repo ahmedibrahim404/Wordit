@@ -59,6 +59,8 @@ class GuessWordPanel extends React.Component {
   updateWord(wordIndex, characterIndex, newCharacter){
     let words = [...this.state.words];
     
+    newCharacter = newCharacter.toLowerCase();
+    
     if(wordIndex >= words.length) return;
     if(characterIndex >= words[wordIndex].length) return;
     if(!isAlpha(newCharacter)) return;
