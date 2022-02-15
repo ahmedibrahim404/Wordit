@@ -42,6 +42,7 @@ io.on('connection', (socket) => {
         if(currentUsersQueue.size == REQ_NUM){
             let contest = createContest(new Set(currentUsersQueue), words);
             currentUsersQueue.clear();
+            contest.sendAllPlayersIDs(io);
             contest.start(io);
             setTimeout(() => contest.endContest(io), CONTEST_TIME);
         }
@@ -58,6 +59,7 @@ io.on('connection', (socket) => {
         contest.addPlayerToQueue(user);
 
         if(contest.getQueue().size == contest.getNumberOfPlayers()){
+            contest.sendAllPlayersIDs(io);
             contest.start(io);
             setTimeout(() => contest.endContest(io), contest.getDuration());
         }
