@@ -15,9 +15,10 @@ import Modal from '@mui/material/Modal';
 import Backdrop from '@mui/material/Backdrop';
 import Fade from '@mui/material/Fade';
 import {socket} from '../../../../utilities/socket';
+import { Button, Grid } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function TablePaginationActions(props) {
-  const { count, page, rowsPerPage, onPageChange } = props;
   return (
     <Box sx={{ flexShrink: 0, ml: 2.5 }} ></Box>
   );
@@ -46,6 +47,8 @@ function ScoreboardData(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  
+  let navigate = useNavigate();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -56,68 +59,78 @@ function ScoreboardData(props) {
     setPage(0);
   };
 
+  const playAgain = () => {
+    navigate('/');
+  }
+
   let rows = [...props.scoreboard];
   return (
-    <TableContainer component={Paper} style={{position:"fixed", top:"20%", right:"40%", maxWidth:350}}>
-      <Table sx={{ maxWidth: 350 }} aria-label="custom pagination table">
-        <TableBody>
-          {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
-          ).map((row) => (
-            <TableRow key={row[0]}>
-              <TableCell component="th" scope="row">
-                {row[0]}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row[1]}
-              </TableCell>
-            </TableRow>
-          ))}
+    <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
+      <TableContainer component={Paper} style={{position:"fixed", top:"20%", maxWidth:350}}>
+        <Table aria-label="custom pagination table">
+          <TableBody>
+            {(rowsPerPage > 0
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row) => (
+              <TableRow key={row[0]}>
+                <TableCell component="th" scope="row">
+                  {row[0]}
+                </TableCell>
+                <TableCell align="right">
+                  {row[1]}
+                </TableCell>
+              </TableRow>
+            ))}
 
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={6} />
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 
+                  10, 25,
+                  { label: 'All', value: -1 }
+                  ]}
+                colSpan={3}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: {
+                    'aria-label': 'rows per page',
+                  },
+                  native: true,
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
             </TableRow>
-          )}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 
-                10, 25,
-                 { label: 'All', value: -1 }
-                ]}
-              colSpan={3}
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{
-                inputProps: {
-                  'aria-label': 'rows per page',
-                },
-                native: true,
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+      {props.isContestRunning ? null :(
+        <Button variant="contained" style={{position:"fixed", top:"50%"}} onClick={playAgain}>Play Again!</Button>
+      )}
+    </Grid>
   );
 }
 
 
-export default class Scoreboard extends React.Component {
+class Scoreboard extends React.Component {
    
   constructor(props){
     super(props);
     this.io = socket;
     this.state = {
       open:false,
-      scoreboard:[]
+      scoreboard:[],
+      isContestRunning:true
     }
     
   }
@@ -129,6 +142,7 @@ export default class Scoreboard extends React.Component {
 
     this.io.on('end-contest', ({scoreboard}) => {
       this.setScoreboard(scoreboard);
+      this.setState({isContestRunning:false});
       this.setOpen(true);
     });
 
@@ -162,6 +176,7 @@ export default class Scoreboard extends React.Component {
 
 
   handleClose = () => {
+    if(!this.state.isContestRunning) return;
     this.setOpen(false);
   };
 
@@ -188,10 +203,14 @@ export default class Scoreboard extends React.Component {
                 }}
             >
                 <Fade in={this.state.open}>
-                  <div><ScoreboardData scoreboard={this.state.scoreboard} /></div>
+                  <div>
+                    <ScoreboardData isContestRunning={this.state.isContestRunning} scoreboard={this.state.scoreboard} />
+                  </div>
                 </Fade>
             </Modal>
         </div>
     );
   }
 }
+
+export default Scoreboard;
