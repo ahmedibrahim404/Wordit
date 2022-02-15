@@ -11,36 +11,71 @@ class GuessWordPanel extends React.Component {
   constructor(props){
     
     super(props);
-
-    let wordResult = [];
-    let results = [];
-    for(let i=0;i<5;i++) wordResult.push(0);
-    for(let i=0;i<5;i++) results.push(wordResult);
-
+    
     this.io = socket;
     this.state = {
-      numberOfWords: 5,
+      numberOfWords: this.props.numberOfWords,
       numberOfTiles: 5,
+      numberOfAttempts:this.props.numberOfAttempts,
+      currentWordIndex:this.props.currentWordIndex,
+
       words:[],
-      results:results,
-      currentWord: 0,
-      currentWordIndex:0,
+      results:this.props.results,
+      
+      currentRowIndex: 0,
+      currentCharIndex:0,
+      
       mainPlayer:props.mainPlayer,
       ownerID:props.ownerID
     }
 
-    while(this.state.words.length < this.state.numberOfWords) this.state.words.push(" ".repeat(this.state.numberOfTiles));
     this.pressFunction = this.pressFunction.bind(this);
     this.changeWordResult = this.changeWordResult.bind(this);
+    this.clearGrid = this.clearGrid.bind(this);
+  }
+
+  clearGrid(currentWordIndex, resultsGiven=null){
+    let results = [];
+    if(resultsGiven == null){
+      let wordResult = [];
+      for(let i=0;i<5;i++) wordResult.push(0);
+      for(let i=0;i<5;i++) results.push(wordResult);
+    } else {
+      results = [...resultsGiven];
+    }
+    let idx = 0;
+    let words = [];
+
+    while(idx < this.state.numberOfAttempts){
+      words.push(" ".repeat(this.state.numberOfTiles));
+      idx++;
+    }
+
+    this.setState({
+      ...this.state,
+      results,
+      words,
+      currentRowIndex:0,
+      currentCharIndex:0,
+      currentWordIndex
+    });
+
+
   }
   
   componentDidMount(){
+    this.clearGrid(this.state.currentWordIndex);
     this.onContestStart();
     this.io.on('player-state-update', ({user, guessAnswer}) => {
-      if(user == this.state.ownerID){
+      if(user == this.state.ownerID && guessAnswer.wordIndex == this.state.currentWordIndex){
         this.changeWordResult(guessAnswer);
       }
     });
+  }
+
+  componentDidUpdate(prevProp){
+    if(this.props.currentWordIndex == prevProp.currentWordIndex && this.props.results == prevProp.results) return;
+    this.clearGrid(this.props.currentWordIndex, this.props.results);
   }
 
   onContestStart(){
@@ -70,7 +105,7 @@ class GuessWordPanel extends React.Component {
     this.setState({
       ...this.state,
       words:words,
-      currentWordIndex: characterIndex+1
+      currentCharIndex: characterIndex+1
     });
   }
 
@@ -85,7 +120,7 @@ class GuessWordPanel extends React.Component {
     this.setState({
       ...this.state,
       words:words,
-      currentWordIndex: characterIndex-1
+      currentCharIndex: characterIndex-1
     });
   }
 
@@ -101,8 +136,8 @@ class GuessWordPanel extends React.Component {
   advanceWord(){
     this.setState({
       ...this.state,
-      currentWord: this.state.currentWord+1,
-      currentWordIndex:0
+      currentRowIndex: this.state.currentRowIndex+1,
+      currentCharIndex:0
     });
   }
 
@@ -110,7 +145,7 @@ class GuessWordPanel extends React.Component {
 
     const wordEntered = this.state.words[wordIndex];
     this.io.emit('enter-word', {
-      wordIndex:0,
+      wordIndex:this.state.currentWordIndex,
       wordEntered
     });
     
@@ -122,7 +157,7 @@ class GuessWordPanel extends React.Component {
     let wordIndex = currentResults.numberOfTrials;
 
     let results = this.state.results;
-    results[wordIndex] = currentResults.guessAnswer.map((i) => i+1);
+    results[wordIndex] = currentResults.guessAnswer;
 
     this.setState({
       ...this.state,
@@ -135,15 +170,15 @@ class GuessWordPanel extends React.Component {
 
   pressFunction(event){
     const newKey = event.key;
-    const currentWord = this.state.currentWord;
-    const currentWordIndex = this.state.currentWordIndex;
+    const currentRowIndex = this.state.currentRowIndex;
+    const currentCharIndex = this.state.currentCharIndex;
 
     if(newKey == "Backspace"){
-      this.eraseLastCharacter(currentWord, currentWordIndex);
+      this.eraseLastCharacter(currentRowIndex, currentCharIndex);
     } else if(newKey == "Enter"){
-      this.enterWord(currentWord, currentWordIndex);
+      this.enterWord(currentRowIndex, currentCharIndex);
     } else {
-      this.updateWord(currentWord, currentWordIndex, newKey);
+      this.updateWord(currentRowIndex, currentCharIndex, newKey);
     }
   }
 
