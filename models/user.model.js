@@ -9,6 +9,8 @@ class User {
     numberOfTrials = []; // denotes number of trial in each word in contest
     wordsStates = []; // denotes states of words in contest (0 pending, 1 winner, 2 loser)
 
+    playerGuesses = []; // stores all guesses of player during the game
+
     score;
 
     constructor(contestantID, username=null){
@@ -35,11 +37,26 @@ class User {
         return true;
     }
 
+    clearPlayersGuesses(cnt){
+        for(let i=0;i<cnt;i++){
+            this.playerGuesses.push([]);
+            for(let j=0;j<MAX_NUMBER_OF_TRIALS;j++){
+                this.playerGuesses[i].push([]);
+                for(let k=0;k<5;k++){
+                    this.playerGuesses[i][j].push(0);
+                }
+            }
+        }
+    }
+
+
     initContestantValues(cnt){
         cnt = cnt || 5;
         this.numberOfTrials = Array(cnt).fill(0);
         this.wordsStates = Array(cnt).fill(0);
         this.score = 0;
+        this.playerGuesses = [];
+        this.clearPlayersGuesses(cnt);
     }
 
     canTryWord(wordIndex){
@@ -76,6 +93,8 @@ class User {
         let correctWord = currentContest.getWordsToGuess()[wordIndex];
         let guessAnswer = wordsControllerInstance.compareWords(correctWord, wordEntered);
         
+        this.playerGuesses[wordIndex][numberOfTrials] = [...guessAnswer];
+
         if(wordsControllerInstance.isCorrectGuess(guessAnswer)){ // meaning win
             this.wordsStates[wordIndex] = 1;
             this.addScore(numberOfTrials);
@@ -86,6 +105,11 @@ class User {
 
     leaveContest(){
         this.contestInside = null;
+    }
+
+    getPlayerGuessesOfWord(wordIndex){
+        //console.log(this.playerGuesses);
+        return this.playerGuesses[wordIndex];
     }
 
 }
