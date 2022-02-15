@@ -43,7 +43,7 @@ class WordsReader {
 
     isCorrectGuess(guessAnswer){
         for(let val of guessAnswer){
-            if(val != 0) return false;
+            if(val != 1) return false;
         }
         return true;
     }
