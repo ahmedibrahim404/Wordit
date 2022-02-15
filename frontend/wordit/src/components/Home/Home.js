@@ -32,7 +32,7 @@ const GameButtons = () => (
       return (
         <Grid key={index} item item xs = {false} sm = {4} md = {6} style={{textAlign: "center"}} >
 
-          <Card key = {index} sx={{ maxWidth: 345, m: 2 }}>
+          <Card key = {index} sx={{ maxWidth: 345, m: 2 }} style={{backgroundColor:'rgb(232 215 255)'}}>
         
           <CardHeader
               title={
