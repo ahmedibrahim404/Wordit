@@ -40,14 +40,14 @@ class GuessWordPanelRow extends React.Component{
   addTiles(){
     this.tiles = [];
     this.word = this.props.currentWord || "";    
-    for(let i=0;i<this.numberOfTiles;i++) this.tiles.push(<GuessWordPanelTile key={i} mainPlayer={this.props.mainPlayer} color={this.props.result[i]} currentCharacter={this.word.length > i ? this.word[i] : ''} />);
+    for(let i=0;i<this.numberOfTiles;i++) this.tiles.push(<GuessWordPanelTile key={i} mainPlayer={this.props.mainPlayer} color={this.props.result ? this.props.result[i] : 0} currentCharacter={this.word.length > i ? this.word[i] : ''} />);
   }
 
 
 
   render(){
     this.addTiles();
-    while(this.props.result.length < this.props.numberOfTiles) this.props.result.push(0);
+    // while(this.props.result.length < this.props.numberOfTiles) this.props.result.push(0);
     return (
         <Box style={{marginTop:"2px", marginBottom:"0px"}}>
           <Grid container spacing={2}>
