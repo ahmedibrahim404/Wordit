@@ -16,13 +16,17 @@ class GuessWordPanelTile extends React.Component {
         backgroundColor:colors[this.props.color],
         height:this.props.mainPlayer ? "60px" : "25px",
         width:this.props.mainPlayer ? "60px" : "25px",
+        display:"flex",
         textAlign:"center",
-        alignContent:"center",
-        verticalAlign:"center",
+        verticalAlign:"middle",
+        justifyContent:"center",
+        alignItems:"center",
         margin:this.props.mainPlayer ? "2px" : "1px",
-        borderRadius:"5px"
+        borderRadius:"5px",
+        color:'#202020',
+        fontWeight:'bold'
       }}>
-        {this.props.mainPlayer ? this.props.currentCharacter : ''}
+        {this.props.mainPlayer ? this.props.currentCharacter.toUpperCase() : ''}
       </div>  
     );
   }
