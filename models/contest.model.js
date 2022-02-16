@@ -96,6 +96,10 @@ class Contest {
         return results;
     }
 
+    getNumberTrialsPerWord(){
+        return MAX_NUMBER_OF_TRIALS;
+    }
+
 }
 
 module.exports = Contest;

@@ -64,6 +64,9 @@ class PrivateContest extends Contest {
         return this.duration;
     }
     
+    getNumberTrialsPerWord(){
+        return this.trialsPerWord || MAX_NUMBER_OF_TRIALS;
+    }
 
 }
 
