@@ -54,7 +54,7 @@ class GuessWordPanel extends React.Component {
 
     let idx = 0;
     let words = [];
-    while(idx < this.state.numberOfAttempts){
+    while(idx < this.props.numberOfAttempts){
       words.push(" ".repeat(this.state.numberOfTiles));
       idx++;
     }
@@ -85,7 +85,7 @@ class GuessWordPanel extends React.Component {
 
   componentDidUpdate(prevProp){
     // checks if the same previous props, don't clear the grid
-    if(this.props.currentWordIndex == prevProp.currentWordIndex && this.props.results == prevProp.results) return;
+    if(this.props.currentWordIndex == prevProp.currentWordIndex && this.props.results == prevProp.results && this.props.numberOfAttempts == prevProp.numberOfAttempts) return;
     this.clearGrid(this.props.currentWordIndex, this.props.results);
   }
 
