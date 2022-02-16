@@ -13,6 +13,7 @@ import CardMedia from '@mui/material/CardMedia';
 import { games } from '../../config';
 import { Link } from 'react-router-dom';
 
+import gameImage from './puzzle.png';
 
 const GameButtons = () => (
   
@@ -42,9 +43,9 @@ const GameButtons = () => (
           
           <CardMedia
             component="img"
-            height="140"
-            image="https://pi.tedcdn.com/r/talkstar-photos.s3.amazonaws.com/uploads/72bda89f-9bbf-4685-910a-2f151c4f3a8a/NicolaSturgeon_2019T-embed.jpg?w=512"
-            alt="Nicola Sturgeon on a TED talk stage"
+            height="200"
+            image={gameImage}
+            alt="game image"
           />
         
           <CardContent>
