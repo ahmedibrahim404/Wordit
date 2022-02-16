@@ -34,6 +34,7 @@ class GuessWordPlay extends React.Component {
     this.state = {
       users:[],
       wordNumbers:2,
+      attemptsNumber: 5,
       currentWordIndex:0,
       currentWordAnswers:{},
 
@@ -58,6 +59,15 @@ class GuessWordPlay extends React.Component {
       currentWordAnswers: results
     });
   });
+
+  this.io.on('start-contest', ({contestDuration, numberOfWords, numberOfTrials}) => {
+    this.setState({
+      contestDuration,
+      wordNumbers: numberOfWords,
+      attemptsNumber: numberOfTrials
+    });
+  });
+
 
   }
 
@@ -84,7 +94,7 @@ class GuessWordPlay extends React.Component {
           <Button disabled={this.state.currentWordIndex >= this.state.wordNumbers-1} onClick={this.goNextWord}>Next Word</Button>
         </ButtonGroup>
       </Box>
-      <GuessWordPanel mainPlayer={true} numberOfWords={5} numberOfAttempts={5}
+      <GuessWordPanel mainPlayer={true} numberOfWords={this.state.wordNumbers} numberOfAttempts={this.state.attemptsNumber}
        currentWordIndex={this.state.currentWordIndex} ownerID={localStorage.getItem('player-id')}
         results={this.state.currentWordAnswers[localStorage.getItem('player-id')]}/>
       </Grid>
@@ -94,7 +104,7 @@ class GuessWordPlay extends React.Component {
 
       {
         this.state.users.map((user) => (user != localStorage.getItem('player-id') ? 
-          <GuessWordPanel numberOfWords={5} numberOfAttempts={5}
+          <GuessWordPanel numberOfWords={this.state.wordNumbers} numberOfAttempts={this.state.attemptsNumber}
            currentWordIndex={this.state.currentWordIndex} ownerID={user}
             mainPlayer={false} results={this.state.currentWordAnswers[user]} />
           : null))
