@@ -49,7 +49,7 @@ class PrivateContest extends Contest {
             io.to(contestant.getContestantID()).emit('start-contest', {
                 contestDuration: this.duration,
                 numberOfWords: this.numberOfWords,
-                numberOfTrials: this.numberOfTrials          
+                numberOfTrials: this.trialsPerWord          
             });
         }
     }
