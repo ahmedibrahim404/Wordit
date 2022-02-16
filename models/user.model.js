@@ -86,8 +86,9 @@ class User {
 
     guessWord(wordIndex, wordEntered, wordsControllerInstance){
         let currentContest = this.getContest(), numberOfTrials = this.getNumberOfTrial(wordIndex);
-        
-        if(numberOfTrials >= MAX_NUMBER_OF_TRIALS || this.wordsStates[wordIndex] !== 0 || !currentContest.isContestRunning()) return {error:true};
+        let maxNumberOfTrials = currentContest.getNumberTrialsPerWord();
+
+        if(numberOfTrials >= maxNumberOfTrials || this.wordsStates[wordIndex] !== 0 || !currentContest.isContestRunning()) return {error:true};
         this.numberOfTrials[wordIndex]++;
         
         let correctWord = currentContest.getWordsToGuess()[wordIndex];
@@ -98,7 +99,7 @@ class User {
         if(wordsControllerInstance.isCorrectGuess(guessAnswer)){ // meaning win
             this.wordsStates[wordIndex] = 1;
             this.addScore(numberOfTrials);
-        } else if(numberOfTrials == MAX_NUMBER_OF_TRIALS) this.wordsStates[wordIndex] = 2; // lose
+        } else if(numberOfTrials == maxNumberOfTrials) this.wordsStates[wordIndex] = 2; // lose
         
         return { wordIndex, guessAnswer, numberOfTrials };
     }
