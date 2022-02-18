@@ -98,3 +98,8 @@ For frontend
 $ cd wordit/frontend/wordit/
 $ npm run start
 ```
+
+4. For testing pruposes
+```sh
+$ npm run test
+```
