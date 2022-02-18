@@ -52,6 +52,12 @@ class CreateContestForm extends React.Component {
       slotsAvailable, contestDuration, wordsPerContest, trialsPerWord
     });
 
+    /*
+      alertType
+        0 Fail
+        1 Note
+        2 Success
+    */
     this.showAlert(2, 'Contest was created succesfully! Press Copy to copy the code');
 
   }
@@ -89,6 +95,12 @@ class CreateContestForm extends React.Component {
   }
 
   showAlert(alertType, alertMessage){
+    /*
+      alertType
+        0 Fail
+        1 Note
+        2 Success
+    */
     this.setState({
       alertType, alertMessage
     });
