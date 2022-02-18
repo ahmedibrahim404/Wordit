@@ -4,6 +4,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box } from '@mui/system';
 import { Link } from 'react-router-dom';
 import { socket } from '../../../../utilities/socket';
+import Alerts from '../../../main-components/Alerts/Alerts';
+
 class CreateContestForm extends React.Component {
   constructor(props) {
     super(props);
@@ -20,15 +22,16 @@ class CreateContestForm extends React.Component {
     };
 
     this.contstraints = {
-      slotsAvailable:[1, 5],
-      contestDuration:[1, 10],
-      wordsPerContest:[1, 10],
-      trialsPerWord:[2, 10]
+      slotsAvailable:[1, 5, 'Players Count'],
+      contestDuration:[1, 10, 'Contest Duration'],
+      wordsPerContest:[1, 10, 'Words Count'],
+      trialsPerWord:[2, 10, 'Guesses per Word Count']
     }
 
     this.handleChange = this.handleChange.bind(this);
     this.createContest = this.createContest.bind(this);
     this.copyCode = this.copyCode.bind(this);
+    this.checkConstraints = this.checkConstraints.bind(this);
   }
 
   componentDidMount(){
@@ -41,13 +44,30 @@ class CreateContestForm extends React.Component {
   }
 
   createContest(){
-    let slotsAvailable = this.state.slotsAvailable, contestDuration = this.state.contestDuration, wordsPerContest = this.state.wordsPerContest, trialsPerWord = this.state.trialsPerWord;
+    let slotsAvailable = this.state.slotsAvailable, contestDuration = this.state.contestDuration*1000*60, wordsPerContest = this.state.wordsPerContest, trialsPerWord = this.state.trialsPerWord;
     
-    console.log("SENT");
+    if(!this.checkConstraints()) return;
+
     this.io.emit('create-private-contest', {
       slotsAvailable, contestDuration, wordsPerContest, trialsPerWord
     });
 
+    this.showAlert(1, 'Contest was created succesfully! Press Copy to copy the code');
+
+  }
+
+  checkConstraints(){
+    // loop through all 4 inputs, and check if the number entered is true
+    let values = ['slotsAvailable', 'contestDuration', 'wordsPerContest', 'trialsPerWord'];
+    for(let value of values){
+      let min = this.contstraints[value][0], max=this.contstraints[value][1];
+      if(this.state[value] > max || this.state[value] < min) {
+        this.showAlert(0, this.contstraints[value][2] + ' should be between ' + min + ' and ' + max);
+        return false;
+      }
+    }
+
+    return true;
   }
 
   handleChange(e){
@@ -68,10 +88,16 @@ class CreateContestForm extends React.Component {
     });
   }
 
+  showAlert(alertType, alertMessage){
+    this.setState({
+      alertType, alertMessage
+    });
+  }
+
   render(){
       return (
         <div style={{display: 'flex',alignItems: 'center',justifyContent: 'center'}} data-testid="CreateContestForm">
-
+          <Alerts alertType={this.state.alertType} alertMessage={this.state.alertMessage} />
           <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
               <h2>Create Word Guess Contest</h2>
               <TextField id="slotsAvailable" pattern="[0-9]*" InputLabelProps={{style:{color:"#000"}}} value={this.state.slotsAvailable} onChange={this.handleChange} label="Players Count" variant="standard" inputProps={{color:'white'}} style={{textInput:'white', minWidth:"50%"}} />
