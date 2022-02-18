@@ -60,7 +60,7 @@ class User {
     }
 
     canTryWord(wordIndex){
-        return wordIndex < this.wordsStates.length && this.wordsStates[wordIndex] === 0;
+        return this.isInContest() && wordIndex < this.wordsStates.length && this.wordsStates[wordIndex] === 0;
     }
 
     getNumberOfTrial(wordIndex){
