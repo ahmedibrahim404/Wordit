@@ -127,8 +127,8 @@ class GuessWordPlay extends React.Component {
     
       <Divider orientation="vertical" flexItem style={{marginTop:"50px"}} />
 
-      <Grid item xs={3}>
-
+      <Grid item xs={3} container spacing={0} direction="column" alignItems="center" justifyContent="center">
+      <h3 style={{color:'#3A3B3C'}}>Other Players</h3>
       {
         this.state.users.map((user) => (user != localStorage.getItem('player-id') ? 
           <GuessWordPanel numberOfWords={this.state.wordNumbers} numberOfAttempts={this.state.attemptsNumber}
