@@ -38,7 +38,7 @@ class GuessWordPlay extends React.Component {
       currentWordIndex:0,
       currentWordAnswers:{},
 
-      contestDuration:5000
+      contestDuration:0
     }
 
     this.goNextWord = this.goNextWord.bind(this);
