@@ -55,6 +55,7 @@ class JoinContestForm extends React.Component {
     });
   }
 
+  // for all inputs based on ID
   handleChange(e){
     let targetID = e.target.id;
     let targetVal = e.target.value;
@@ -72,7 +73,7 @@ class JoinContestForm extends React.Component {
         <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
             <h2>Join Word Guess Contest</h2>
             <TextField id="username" onChange={this.handleChange} value={this.state.username} label="Username" variant="standard" style={{minWidth:"50%"}} />
-            <TextField id="contestCode" onChange={this.handleChange} value={this.state.contestCode} label="Contest ID(leave empty if none)" variant="standard" style={{minWidth:"50%"}}  />
+            <TextField id="contestCode" onChange={this.handleChange} value={this.state.contestCode} label="Contest ID(leave empty to join global contests)" variant="standard" style={{minWidth:"50%"}}  />
             <Button variant="contained" onClick={this.joinContest} style={{backgroundColor:'#181818', fontWeight:'bold' , minWidth:'50%', minHeight:'40px', margin:'25px'}}>Join Contest</Button>    
         </Grid>
 
