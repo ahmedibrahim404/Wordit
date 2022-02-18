@@ -74,7 +74,9 @@ class GuessWordPanel extends React.Component {
     // clear grid for the first word
     this.clearGrid(this.state.currentWordIndex);
     // start contest
-    this.onContestStart();
+    this.io.on('start-contest', () => {
+      this.onContestStart();
+    });  
     // add event to check if any player enters word, and insert it
     this.io.on('player-state-update', ({user, guessAnswer}) => {
       if(user == this.state.ownerID && guessAnswer.wordIndex == this.state.currentWordIndex){
