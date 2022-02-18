@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
 
         user.setUsername(username);
         let contest = PrivateContest.getContestFromCode(contestCode); // static method
-        if(contest == null) return;
+        if(contest == null) return; // if contest doesn't exist
 
         contest.addPlayerToQueue(user);
 
@@ -66,6 +66,7 @@ io.on('connection', (socket) => {
 
 
     socket.on('create-private-contest', ({contestDuration, slotsAvailable, wordsPerContest, trialsPerWord}) => {
+        if(!user.isInContest()) return;
         let contest = new PrivateContest(words, wordsPerContest, trialsPerWord, slotsAvailable, contestDuration); 
         io.to(userID).emit('private-contest-code', {contestCode: contest.getContestID()});
     });
