@@ -5,7 +5,7 @@ const WORDS_PER_CONTEST = config.WORDS_PER_CONTEST || 2;
 
 class WordsReader {
 
-    words;
+    words = [];
 
     constructor(){
         fs.readFile(path.join(__dirname , '/../words.txt'), 'utf8' , (err, data) => {
