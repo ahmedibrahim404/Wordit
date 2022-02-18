@@ -11,6 +11,9 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { Box } from '@mui/material';
 import Timer from '../Objects/Timer/Timer';
+import Modal from '@mui/material/Modal';
+import Backdrop from '@mui/material/Backdrop';
+import Fade from '@mui/material/Fade';
 
 const Grid = styled(MuiGrid)(({ theme }) => ({
   width: '100%',
@@ -37,6 +40,7 @@ class GuessWordPlay extends React.Component {
       attemptsNumber: 5,
       currentWordIndex:0,
       currentWordAnswers:{},
+      isRunning:false,
 
       contestDuration:0
     }
@@ -62,6 +66,7 @@ class GuessWordPlay extends React.Component {
 
   this.io.on('start-contest', ({contestDuration, numberOfWords, numberOfTrials}) => {
     this.setState({
+      isRunning:true,
       contestDuration,
       wordNumbers: numberOfWords,
       attemptsNumber: numberOfTrials
@@ -84,20 +89,42 @@ class GuessWordPlay extends React.Component {
     <div className={styles.GuessWordPlay} data-testid="GuessWordPlay">
 
     <Scoreboard />
+    
+    <Modal
+      aria-labelledby="transition-modal-title"
+      aria-describedby="transition-modal-description"
+      open={!this.state.isRunning}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+          timeout: 500,
+      }}>
+        <div>
+          <h1 style={{position:'fixed', color:'white', top:'50%', left:'25%'}}>
+            CONTEST WILL START SOON
+          </h1>
+        </div>
+    </Modal>  
 
     <Grid container spacing={2}>
+    
       <Timer time={this.state.contestDuration} />
+    
       <Grid item xs={8}>
+    
       <Box textAlign='center'>
         <ButtonGroup variant="text" aria-label="text button group">
           <Button disabled={true}>Word #{this.state.currentWordIndex+1}</Button>
           <Button disabled={this.state.currentWordIndex >= this.state.wordNumbers-1} onClick={this.goNextWord}>Next Word</Button>
         </ButtonGroup>
       </Box>
+    
       <GuessWordPanel mainPlayer={true} numberOfWords={this.state.wordNumbers} numberOfAttempts={this.state.attemptsNumber}
        currentWordIndex={this.state.currentWordIndex} ownerID={localStorage.getItem('player-id')}
         results={this.state.currentWordAnswers[localStorage.getItem('player-id')]}/>
+    
       </Grid>
+    
       <Divider orientation="vertical" flexItem style={{marginTop:"50px"}} />
 
       <Grid item xs={3}>
@@ -110,11 +137,8 @@ class GuessWordPlay extends React.Component {
           : null))
       }
       
-
       </Grid>
     </Grid>
-
-
     </div>
     );
   }
