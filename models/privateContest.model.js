@@ -17,7 +17,7 @@ class PrivateContest extends Contest {
 
     constructor(wordsList, wordsCount, trialsPerWord, playersCount, duration){
         super(wordsList, wordsCount);
-        PrivateContest.contests.set(this.getContestID(), this);
+        PrivateContest.contests.set(this.getContestID(), this); // call static method
 
         this.numberOfWords = wordsCount || WORDS_PER_CONTEST;
         this.numberOfPlayers = playersCount || REQ_NUM;
@@ -40,8 +40,6 @@ class PrivateContest extends Contest {
     }
 
     start(io){
-        console.log("Contest Started!!!");
-        console.log("GO AND GUESS " + this.getWordsToGuess());
         this.isRunning = true;
 
         let contestants = [...this.getContestants()];
@@ -61,7 +59,7 @@ class PrivateContest extends Contest {
     }
 
     getDuration(){
-        return this.duration;
+        return this.duration || CONTEST_TIME;
     }
     
     getNumberTrialsPerWord(){
