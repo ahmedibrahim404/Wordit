@@ -38,6 +38,7 @@ class User {
     }
 
     clearPlayersGuesses(cnt){
+        // clear guesses for all words [number of words is `cnt`]
         for(let i=0;i<cnt;i++){
             this.playerGuesses.push([]);
             for(let j=0;j<MAX_NUMBER_OF_TRIALS;j++){
@@ -60,6 +61,7 @@ class User {
     }
 
     canTryWord(wordIndex){
+        // if player can still try to guess word with index `wordIndex`
         return this.isInContest() && wordIndex < this.wordsStates.length && this.wordsStates[wordIndex] === 0;
     }
 
@@ -68,6 +70,7 @@ class User {
     }
 
     setUsername(username=null){
+        // username doesn't have to be unique (since userID is unique)
         if(username == null) username = "User_" + Math.floor(Math.random()*1000);
         this.username = username;
     }
@@ -89,17 +92,19 @@ class User {
         let maxNumberOfTrials = currentContest.getNumberTrialsPerWord();
 
         if(numberOfTrials >= maxNumberOfTrials || this.wordsStates[wordIndex] !== 0 || !currentContest.isContestRunning()) return {error:true};
+        // increment trials for word
         this.numberOfTrials[wordIndex]++;
         
         let correctWord = currentContest.getWordsToGuess()[wordIndex];
         let guessAnswer = wordsControllerInstance.compareWords(correctWord, wordEntered);
         
+        // replace players guesses for word `wordIndex` for row `numberOfTrials` with `guessAnswer` 
         this.playerGuesses[wordIndex][numberOfTrials] = [...guessAnswer];
 
-        if(wordsControllerInstance.isCorrectGuess(guessAnswer)){ // meaning win
-            this.wordsStates[wordIndex] = 1;
-            this.addScore(numberOfTrials);
-        } else if(numberOfTrials == maxNumberOfTrials) this.wordsStates[wordIndex] = 2; // lose
+        if(wordsControllerInstance.isCorrectGuess(guessAnswer)){ // meaning win [all is green]
+            this.wordsStates[wordIndex] = 1; // means it's a win state
+            this.addScore(numberOfTrials);// add score based on criteria mentioned 
+        } else if(numberOfTrials == maxNumberOfTrials) this.wordsStates[wordIndex] = 2; // lose state
         
         return { wordIndex, guessAnswer, numberOfTrials };
     }
@@ -109,7 +114,6 @@ class User {
     }
 
     getPlayerGuessesOfWord(wordIndex){
-        //console.log(this.playerGuesses);
         return this.playerGuesses[wordIndex];
     }
 
