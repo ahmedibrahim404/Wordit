@@ -52,7 +52,7 @@ class CreateContestForm extends React.Component {
       slotsAvailable, contestDuration, wordsPerContest, trialsPerWord
     });
 
-    this.showAlert(1, 'Contest was created succesfully! Press Copy to copy the code');
+    this.showAlert(2, 'Contest was created succesfully! Press Copy to copy the code');
 
   }
 
