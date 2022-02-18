@@ -3,10 +3,10 @@ const generateContestID = require('../functionalities/generateContestID');
 
 class Contest {
 
-    contestID;
+    contestID; // unique for each contest
     contestants = new Set();
-    wordsToGuess;
-    isRunning;
+    wordsToGuess; // array of words
+    isRunning; // denotes if contest is still running
 
     constructor(wordsList, wordsCount){
         this.contestID = generateContestID();
@@ -31,8 +31,6 @@ class Contest {
     }
 
     start(io){
-        console.log("Contest Started!!!");
-        console.log("GO AND GUESS " + this.getWordsToGuess());
         this.isRunning = true;
 
         let contestants = [...this.getContestants()];
@@ -74,7 +72,7 @@ class Contest {
 
     }
 
-    proadcastAllContestants(io, event, params){
+    proadcastAllContestants(io, event, params){ // send event over socket to all players within contest
         let contestants = [...this.getContestants()];
         for(let contestant of contestants){
             io.to(contestant.getContestantID()).emit(event, params);
@@ -96,7 +94,11 @@ class Contest {
         return results;
     }
 
-    getNumberTrialsPerWord(){
+    getDuration(){ // should be overrided for private contest
+        return CONTEST_TIME;
+    }
+
+    getNumberTrialsPerWord(){ // should be overrided for private contest
         return MAX_NUMBER_OF_TRIALS;
     }
 
