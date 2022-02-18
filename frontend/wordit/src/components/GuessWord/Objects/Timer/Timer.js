@@ -31,8 +31,9 @@ export default function Timer(props) {
     let duration = props.time;
     const timer = setInterval(() => {        
       setProgress((prevProgress) => {
-        console.log(prevProgress + " " + duration);
+        // if contest is over, clear the timer
           if(prevProgress >= duration) clearInterval(timer);
+      // increase 1 second every 1000 milliseconds
         return (prevProgress >= duration ? duration : (prevProgress + 1000));;
       })
     }, 1000);
@@ -43,7 +44,7 @@ export default function Timer(props) {
 
   return (
     <Grid   container alignItems="center" justifyContent="center" style={{ minHeight: '50px' }}>
-        <Box sx={{ width: '60%'  }}>
+        <Box sx={{ width: '60%' }}>
         <LinearProgressWithLabel value={Math.floor((props.time-progress)/props.time * 100)} timeLeft={(props.time-progress)/1000} />
         </Box>
     </Grid>
