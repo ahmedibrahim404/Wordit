@@ -1,5 +1,8 @@
+const uuid = require("uuid")
+
+
 function generateContestID(){
-    return 'Contest_' + Math.floor(Math.random() * 100);
+    return uuid.v4();
 }
 
 module.exports = generateContestID;
