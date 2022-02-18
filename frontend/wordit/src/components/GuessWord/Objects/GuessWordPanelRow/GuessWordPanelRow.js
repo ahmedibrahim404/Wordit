@@ -16,18 +16,18 @@ class GuessWordPanelTile extends React.Component {
         backgroundColor:colors[this.props.color],
         height:this.props.mainPlayer ? "60px" : "25px",
         width:this.props.mainPlayer ? "60px" : "25px",
+        margin:this.props.mainPlayer ? "2px" : "1px",
         display:"flex",
         textAlign:"center",
         verticalAlign:"middle",
         justifyContent:"center",
         alignItems:"center",
-        margin:this.props.mainPlayer ? "2px" : "1px",
         borderRadius:"5px",
         color:'#202020',
         fontWeight:'bold'
       }}>
         {this.props.mainPlayer ? this.props.currentCharacter.toUpperCase() : ''}
-      </div>  
+      </div>
     );
   }
 
@@ -43,7 +43,8 @@ class GuessWordPanelRow extends React.Component{
   
   addTiles(){
     this.tiles = [];
-    this.word = this.props.currentWord || "";    
+    this.word = this.props.currentWord || "";
+    // number of tiles per row (number of characters in word)
     for(let i=0;i<this.numberOfTiles;i++) this.tiles.push(<GuessWordPanelTile key={i} mainPlayer={this.props.mainPlayer} color={this.props.result ? this.props.result[i] : 0} currentCharacter={this.word.length > i ? this.word[i] : ''} />);
   }
 
@@ -51,7 +52,6 @@ class GuessWordPanelRow extends React.Component{
 
   render(){
     this.addTiles();
-    // while(this.props.result.length < this.props.numberOfTiles) this.props.result.push(0);
     return (
         <Box style={{marginTop:"2px", marginBottom:"0px"}}>
           <Grid container spacing={2}>
