@@ -15,11 +15,12 @@ class WordsReader {
             }
             this.words = data.split(' ');
         });       
-    };
+    }
 
     pickWords(numberOfWords=null){
         let wordsChosen = new Set();
         numberOfWords = numberOfWords || WORDS_PER_CONTEST;
+        // all elements of set are different
         while(wordsChosen.size < numberOfWords){
             // pick random index from 0 to words.length-1
             let index = Math.floor(Math.random()*this.words.length);
@@ -41,9 +42,9 @@ class WordsReader {
         return ans;
     }
 
-    isCorrectGuess(guessAnswer){
+    isCorrectGuess(guessAnswer){ // is correct guess word
         for(let val of guessAnswer){
-            if(val != 1) return false;
+            if(val != 1) return false; // if not correct [(1) means correct guess]
         }
         return true;
     }
