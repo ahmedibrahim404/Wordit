@@ -6,14 +6,13 @@ const cors = require('cors');
 const { Server } = require("socket.io");
 
 const User = require('./models/user.model');
-const Contest = require('./models/contest.model');
 const PrivateContest = require('./models/privateContest.model.js');
 const { createContest } = require('./functionalities/createContest');
 const WordsReader = require('./functionalities/words');
 
 const PORT = config.PORT || 3000;
-const REQ_NUM = config.REQ_NUM || 3; 
-const CONTEST_TIME = config.CONTEST_TIME || 60000; // 60 seconds
+const REQ_NUM = config.REQ_NUM; 
+const CONTEST_TIME = config.CONTEST_TIME;
 
 app.use(cors());
 
@@ -28,7 +27,6 @@ let words = new WordsReader();
 let currentUsersQueue = new Set();
 
 io.on('connection', (socket) => {
-    console.log(socket.id + " User connected!");
     let userID = socket.id;
     let user = new User(userID);
 
@@ -39,6 +37,7 @@ io.on('connection', (socket) => {
         user.setUsername(username);
         currentUsersQueue.add(user);
         
+        // if number of users in queue is enough to start contest
         if(currentUsersQueue.size == REQ_NUM){
             let contest = createContest(new Set(currentUsersQueue), words);
             currentUsersQueue.clear();
@@ -72,15 +71,15 @@ io.on('connection', (socket) => {
     });
 
 
-    socket.on('enter-word', ({wordEntered, wordIndex}) => {
+    socket.on('enter-word', ({wordEntered, wordIndex}) => { // whenever any play attempts a guess
         if(!user.isInContest() || !user.canTryWord(wordIndex)) return;
         
-        let guessAnswer = user.guessWord(wordIndex, wordEntered, words);
+        let guessAnswer = user.guessWord(wordIndex, wordEntered, words); // get guess result
 
-        if(guessAnswer.error) return;
+        if(guessAnswer.error) return; // if cannot guess [trials are over], skip
 
         let response = {user:userID,guessAnswer}
-        user.getContest().proadcastAllContestants(io, 'player-state-update', response);
+        user.getContest().proadcastAllContestants(io, 'player-state-update', response); // send update to all players
     });
 
     socket.on('get-scoreboard', () => {
@@ -89,7 +88,7 @@ io.on('connection', (socket) => {
         io.to(userID).emit('send-scoreboard', {scoreboard:contest.getScoreboard()});
     });
 
-    socket.on('get-players-word-result', ({wordIndex}) => {
+    socket.on('get-players-word-result', ({wordIndex}) => { // get players results[guesses] for specific word
         if(!user.isInContest()) return;
         let contest = user.getContest();
         io.to(userID).emit('send-players-word-result', {results:contest.getPlayersWordResult(wordIndex)});
@@ -97,9 +96,8 @@ io.on('connection', (socket) => {
 
 
     socket.on('disconnect', () => {
-        if(user.isInContest()) user.leaveContest();
-        else currentUsersQueue.delete(user);
-        console.log(socket.id +  " Disconnected :(");
+        if(user.isInContest()) user.leaveContest(); // if in contest, leave it
+        else if(currentUsersQueue.has(user)) currentUsersQueue.delete(user);
     });
 
 });
