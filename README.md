@@ -29,3 +29,10 @@
 - There is a scoring system with penalty for each round in the contest:
 - Each round has a total score of 100, if the player gets the correct answer after k trials then they will get score of `max(0, 100-k*10)` , so this means will be penalized by 10 every time they provide a wrong guess
 - Scoreboard available during the contest sorted based on score
+
+
+## Live screenshots/gifs
+![V1](https://github.com/ahmedibrahim404/Wordit/blob/master/images/1.gif)
+![V2](https://github.com/ahmedibrahim404/Wordit/blob/master/images/2.gif)
+
+
