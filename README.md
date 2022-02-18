@@ -32,7 +32,69 @@
 
 
 ## Live screenshots/gifs
+#### Creating Contest/ Joining Contest
 ![V1](https://github.com/ahmedibrahim404/Wordit/blob/master/images/1.gif)
+
+#### How it's played
 ![V2](https://github.com/ahmedibrahim404/Wordit/blob/master/images/2.gif)
 
+### Tech
+READit mainly depend on:
+* [Expressjs] - Run the back-end server
+* [Socket.io] - For two-way communication between web clients and server
+* [Reactjs] - For frontend
 
+
+## Getting Started
+Wordit requires [Node.js](https://nodejs.org/) to run.
+
+Install the dependencies and devDependencies and start the server.
+
+1. Clone the repositroy
+```sh
+$ git clone https://github.com/ahmedibrahim404/Wordit
+```
+
+2. Navigate to repo location
+```sh
+$ cd Wordit
+```
+
+3. Install depenedencies
+```sh
+$ npm install
+```
+
+3. Create your .ENV file and add NEEDED vars
+```sh
+PORT = 8080
+REQ_NUM = 3 # means required number of players for global contest
+CONTEST_TIME = 5000 # in milliseconds
+WORDS_PER_CONTEST = 3
+MAX_NUMBER_OF_TRIALS = 5 # means maximum trials for each word
+PENALITY_PER_WRONG = 10 # means penalty of wrong for each
+```
+
+Run backend server
+```sh
+$ npm run start
+```
+
+Run frontend server
+
+1. Navigate to frontend directory
+```sh
+$ cd wordit/frontend/
+```
+
+2. Edit `config.js` to contain your data
+3. Run the server
+```sh
+$ npm run start
+```
+
+For frontend
+```sh
+$ cd wordit/frontend/wordit/
+$ npm run start
+```
