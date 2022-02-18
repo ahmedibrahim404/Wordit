@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/ahmedibrahim404/Wordit#readme",
   "devDependencies": {
+    "mocha": "^9.2.0",
     "nodemon": "^2.0.15"
   },
   "dependencies": {
